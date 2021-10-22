@@ -1,6 +1,6 @@
 import { Extension } from '@tiptap/core'
 import { Decoration, DecorationSet } from 'prosemirror-view'
-import { EditorState, Plugin, PluginKey, TextSelection } from 'prosemirror-state'
+import { EditorState, Plugin, PluginKey } from 'prosemirror-state'
 import { Node as ProsemirrorNode } from 'prosemirror-model'
 
 declare module '@tiptap/core' {
@@ -15,33 +15,6 @@ declare module '@tiptap/core' {
   }
 }
 
-function processSearches(doc: ProsemirrorNode, searchTerm: string) {
-  const regex = new RegExp(searchTerm)
-  const decorations: any[] = []
-  const results: any[] = [];
-
-  doc?.descendants((node, position) => {
-    if (!node.isText) return;
-
-    if (!node.text) return;
-
-    const matches = regex.exec(node.text);
-
-    if (matches) {
-      results.push({
-        from: position + matches.index,
-        to: position + matches.index + matches[0].length
-      });
-    }
-  });
-
-  results.forEach(issue => {
-    decorations.push(Decoration.inline(issue.from, issue.to, { class: "search-result" }));
-  });
-
-  return DecorationSet.create(doc, decorations)
-}
-
 export interface SearchStorage {
   searchTerm: string,
   replaceTerm: string,
@@ -49,8 +22,60 @@ export interface SearchStorage {
   decorations: any[],
 }
 
-const updateView = (state: EditorState<any>, dispatch: any) => {
-  dispatch(state.tr)
+const updateView = (state: EditorState<any>, dispatch: any) => dispatch(state.tr)
+
+const regex = (s: string): RegExp => new RegExp(s, "g")
+
+function processSearches(doc: ProsemirrorNode, searchTerm: RegExp) {
+  const decorations: any[] = []
+  let mergedTextNodes: any[] = []
+  const results: any[] = [];
+
+  let index = 0;
+
+  if (!searchTerm) return
+
+  doc?.descendants((node, pos) => {
+    if (node.isText) {
+      if (mergedTextNodes[index]) {
+        mergedTextNodes[index] = {
+          text: mergedTextNodes[index].text + node.text,
+          pos: mergedTextNodes[index].pos
+        }
+      } else {
+        mergedTextNodes[index] = {
+          text: node.text,
+          pos
+        }
+      }
+    } else {
+      index += 1
+    }
+  });
+
+  mergedTextNodes = mergedTextNodes.filter(Boolean)
+
+  for (let i = 0; i < mergedTextNodes.length; i++) {
+    const { text, pos } = mergedTextNodes[i]
+
+    let m;
+    while ((m = searchTerm.exec(text))) {
+      if (m[0] === "") break
+
+      results.push({
+        from: pos + m.index,
+        to: pos + m.index + m[0].length,
+      })
+    }
+  }
+
+
+  results.forEach(issue => {
+    debugger
+    decorations.push(Decoration.inline(issue.from, issue.to, { class: "search-result" }));
+  });
+
+  return DecorationSet.create(doc, decorations)
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -58,7 +83,7 @@ export const Search = Extension.create({
   name: 'search',
 
   defaultOptions: {
-    searchTerm: 'rep',
+    searchTerm: '',
     replaceTerm: '',
     showSearchTerms: false,
     decorations: [],
@@ -95,13 +120,13 @@ export const Search = Extension.create({
         state: {
           init(_, { doc }) {
             const searchTerm = oldThis.options.searchTerm
-            return processSearches(doc, searchTerm)
+            return processSearches(doc, regex(searchTerm))
           },
           apply(transaction, oldState) {
             const searchTerm = oldThis.options.searchTerm
             return transaction.docChanged || searchTerm
               // ? runAllLinterPlugins(transaction.doc, plugins)
-              ? processSearches(transaction.doc, searchTerm)
+              ? processSearches(transaction.doc, regex(searchTerm))
               : oldState
           },
         },
