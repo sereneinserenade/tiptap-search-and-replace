@@ -24,7 +24,7 @@ export interface SearchStorage {
 
 const updateView = (state: EditorState<any>, dispatch: any) => dispatch(state.tr)
 
-const regex = (s: string): RegExp => new RegExp(s, "g")
+const regex = (s: string): RegExp => new RegExp(s, "gi")
 
 function processSearches(doc: ProsemirrorNode, searchTerm: RegExp) {
   const decorations: any[] = []
@@ -70,12 +70,12 @@ function processSearches(doc: ProsemirrorNode, searchTerm: RegExp) {
   }
 
 
-  results.forEach(issue => {
-    debugger
-    decorations.push(Decoration.inline(issue.from, issue.to, { class: "search-result" }));
-  });
+  results.forEach(r => decorations.push(Decoration.inline(r.from, r.to, { class: "search-result" })))
 
-  return DecorationSet.create(doc, decorations)
+  return {
+    decorationsToReturn: DecorationSet.create(doc, decorations),
+    results
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -87,6 +87,7 @@ export const Search = Extension.create({
     replaceTerm: '',
     showSearchTerms: false,
     decorations: [],
+    results: [],
   },
 
   addCommands() {
@@ -109,8 +110,6 @@ export const Search = Extension.create({
   },
 
   addProseMirrorPlugins() {
-    // const { searchTerm, replaceTerm, showSearchTerms } = this.storage;
-
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const oldThis = this;
 
@@ -121,11 +120,20 @@ export const Search = Extension.create({
           init() {
             return DecorationSet.empty
           },
-          apply(transaction) {
-            const searchTerm = oldThis.options.searchTerm
-            return transaction.docChanged || searchTerm
-              ? processSearches(transaction.doc, regex(searchTerm))
-              : DecorationSet.empty
+          apply({ doc, docChanged }) {
+            const { searchTerm } = oldThis.options
+
+            if (docChanged || searchTerm) {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              const { decorationsToReturn, results } = processSearches(doc, regex(searchTerm))
+
+              oldThis.options.results = results
+
+              return decorationsToReturn
+            } else {
+              return DecorationSet.empty
+            }
           },
         },
         props: {
