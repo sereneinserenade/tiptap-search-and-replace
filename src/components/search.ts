@@ -90,6 +90,8 @@ const replace = (replaceTerm: string, results: any[], { editor, state, dispatch 
   if (dispatch) dispatch(state.tr.insertText(replaceTerm, from, to))
 
   editor.commands.setSearchTerm(searchTerm)
+
+  updateView(state, dispatch)
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
