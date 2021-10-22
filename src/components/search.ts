@@ -83,11 +83,13 @@ function processSearches(doc: ProsemirrorNode, searchTerm: RegExp, searchResultC
   for (let i = 0; i < textNodesWithPosition.length; i++) {
     const { text, pos } = textNodesWithPosition[i]
 
-    let m;
-    while ((m = searchTerm.exec(text))) {
+    const matches = [...text.matchAll(searchTerm)]
+    for (let i = 0; i < matches.length; i++) {
+      const m = matches[i];
       if (m[0] === "") break
+      
 
-      results.push({
+      if (m.index) results.push({
         from: pos + m.index,
         to: pos + m.index + m[0].length,
       })
