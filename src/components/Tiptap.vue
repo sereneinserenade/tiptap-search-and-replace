@@ -33,7 +33,7 @@
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import { ref, watch } from "vue";
-import { Search } from "./search";
+import { SearchNReplace } from "./search";
 
 export default {
   components: {
@@ -44,7 +44,7 @@ export default {
     const editor = useEditor({
       content:
         "<p> Test for search and replace. search for 'amazing' and replace it with 'awe-inspiring'.</p>",
-      extensions: [StarterKit, Search]
+      extensions: [StarterKit, SearchNReplace]
     });
 
     const searchTerm = ref<string>("");
