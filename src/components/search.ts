@@ -118,16 +118,14 @@ export const Search = Extension.create({
       new Plugin({
         key: new PluginKey('search'),
         state: {
-          init(_, { doc }) {
-            const searchTerm = oldThis.options.searchTerm
-            return processSearches(doc, regex(searchTerm))
+          init() {
+            return DecorationSet.empty
           },
-          apply(transaction, oldState) {
+          apply(transaction) {
             const searchTerm = oldThis.options.searchTerm
             return transaction.docChanged || searchTerm
-              // ? runAllLinterPlugins(transaction.doc, plugins)
               ? processSearches(transaction.doc, regex(searchTerm))
-              : oldState
+              : DecorationSet.empty
           },
         },
         props: {

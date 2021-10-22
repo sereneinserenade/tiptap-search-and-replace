@@ -37,7 +37,6 @@
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import { ref, watch } from "vue";
-import { debounce } from "lodash";
 import { Search } from "./search";
 
 export default {
@@ -76,13 +75,11 @@ export default {
       editor.value.commands.setReplaceTerm(replaceTerm.value);
     };
 
-    const debouncedUpdate = debounce(() => updateSearchReplace(), 500)
-
     watch(
       () => searchTerm.value.trim(),
       (val, oldVal) => {
         if (!val) clear();
-        val === oldVal ? null : debouncedUpdate();
+        val === oldVal ? null : updateSearchReplace();
       }
     );
 
