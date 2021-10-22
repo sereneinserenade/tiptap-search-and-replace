@@ -7,7 +7,12 @@
       Italic
     </button>
 
-    <input type="text" placeholder="Search..." v-model="searchTerm" />
+    <input
+      @keydown.enter.prevent="updateSearchReplace"
+      type="text"
+      placeholder="Search..."
+      v-model="searchTerm"
+    />
 
     <input
       @keypress.enter.prevent="replace"
