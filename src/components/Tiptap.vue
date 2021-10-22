@@ -47,20 +47,6 @@ export default {
       extensions: [StarterKit, Search]
     });
 
-    const bold = () =>
-      editor.value
-        ?.chain()
-        .toggleBold()
-        .focus()
-        .run();
-
-    const italic = () =>
-      editor.value
-        ?.chain()
-        .toggleItalic()
-        .focus()
-        .run();
-
     const searchTerm = ref<string>("");
 
     const replaceTerm = ref<string>("");
@@ -92,8 +78,6 @@ export default {
 
     return {
       editor,
-      bold,
-      italic,
       searchTerm,
       replaceTerm,
       updateSearchReplace,

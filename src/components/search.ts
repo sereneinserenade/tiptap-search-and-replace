@@ -54,9 +54,9 @@ const regex = (s: string, disableRegex: boolean, caseSensitive: boolean): RegExp
 function processSearches(doc: ProsemirrorNode, searchTerm: RegExp, searchResultClass: string): { decorationsToReturn: DecorationSet, results: Result[] } {
   const decorations: Decoration[] = []
   let textNodesWithPosition: TextNodesWithPosition[] = []
-  const results: Result[] = [];
+  const results: Result[] = []
 
-  let index = 0;
+  let index = 0
 
   if (!searchTerm) return { decorationsToReturn: DecorationSet.empty, results: [] }
 
@@ -65,43 +65,44 @@ function processSearches(doc: ProsemirrorNode, searchTerm: RegExp, searchResultC
       if (textNodesWithPosition[index]) {
         textNodesWithPosition[index] = {
           text: textNodesWithPosition[index].text + node.text,
-          pos: textNodesWithPosition[index].pos
+          pos: textNodesWithPosition[index].pos,
         }
       } else {
         textNodesWithPosition[index] = {
           text: `${node.text}`,
-          pos
+          pos,
         }
       }
     } else {
       index += 1
     }
-  });
+  })
 
   textNodesWithPosition = textNodesWithPosition.filter(Boolean)
 
-  for (let i = 0; i < textNodesWithPosition.length; i++) {
+  for (let i = 0; i < textNodesWithPosition.length; i += 1) {
     const { text, pos } = textNodesWithPosition[i]
 
     const matches = [...text.matchAll(searchTerm)]
-    for (let i = 0; i < matches.length; i++) {
-      const m = matches[i];
-      if (m[0] === "") break
-      
 
-      if (m.index) results.push({
-        from: pos + m.index,
-        to: pos + m.index + m[0].length,
-      })
+    for (let j = 0; j < matches.length; j += 1) {
+      const m = matches[j]
+      if (m[0] === '') break
+
+      if (m.index) {
+        results.push({
+          from: pos + m.index,
+          to: pos + m.index + m[0].length,
+        })
+      }
     }
   }
-
 
   results.forEach(r => decorations.push(Decoration.inline(r.from, r.to, { class: searchResultClass })))
 
   return {
     decorationsToReturn: DecorationSet.create(doc, decorations),
-    results
+    results,
   }
 }
 
@@ -135,14 +136,14 @@ const rebaseNextResult = (replaceTerm: string, index: number, lastOffset: number
 }
 
 const replaceAll = (replaceTerm: string, results: Result[], { tr, dispatch }: any) => {
-  let offset = 0;
+  let offset = 0
 
-  let ourResults = results.slice();
+  let ourResults = results.slice()
 
   if (!ourResults.length) return
 
-  for (let i = 0; i < ourResults.length; i++) {
-    const { from, to } = ourResults[i];
+  for (let i = 0; i < ourResults.length; i += 1) {
+    const { from, to } = ourResults[i]
 
     tr.insertText(replaceTerm, from, to)
 
@@ -158,7 +159,7 @@ const replaceAll = (replaceTerm: string, results: Result[], { tr, dispatch }: an
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export const Search = Extension.create({
+export const SearchNReplace = Extension.create({
   name: 'search',
 
   defaultOptions: {
@@ -209,13 +210,13 @@ export const Search = Extension.create({
         updateView(state, dispatch)
 
         return false
-      }
+      },
     }
   },
 
   addProseMirrorPlugins() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const extensionThis = this;
+    const extensionThis = this
 
     return [
       new Plugin({
@@ -233,9 +234,9 @@ export const Search = Extension.create({
               extensionThis.options.results = results
 
               return decorationsToReturn
-            } else {
-              return DecorationSet.empty
             }
+
+            return DecorationSet.empty
           },
         },
         props: {
