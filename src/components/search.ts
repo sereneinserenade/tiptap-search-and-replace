@@ -225,7 +225,7 @@ export const Search = Extension.create({
           apply({ doc, docChanged }) {
             const { searchTerm, searchResultClass, disableRegex, caseSensitive } = extensionThis.options
 
-            if (docChanged && searchTerm) {
+            if (docChanged || searchTerm) {
               const { decorationsToReturn, results } = processSearches(doc, regex(searchTerm, disableRegex, caseSensitive), searchResultClass)
 
               extensionThis.options.results = results
