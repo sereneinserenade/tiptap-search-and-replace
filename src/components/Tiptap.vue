@@ -21,10 +21,6 @@
       v-model="replaceTerm"
     />
 
-    <button @click="find">
-      Find
-    </button>
-
     <button @click="clear">
       Clear
     </button>
