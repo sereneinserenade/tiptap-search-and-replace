@@ -9,7 +9,12 @@
 
     <input type="text" placeholder="Search..." v-model="searchTerm" />
 
-    <input type="text" placeholder="Replace..." v-model="replaceTerm" />
+    <input
+      @keypress.enter.prevent="replace"
+      type="text"
+      placeholder="Replace..."
+      v-model="replaceTerm"
+    />
 
     <button @click="find">
       Find
@@ -31,8 +36,9 @@
 <script lang="ts">
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
-import { ref } from "vue";
-import { Search } from './search'
+import { ref, watch, watchEffect } from "vue";
+import { debounce } from "lodash";
+import { Search } from "./search";
 
 export default {
   components: {
@@ -64,8 +70,21 @@ export default {
 
     const replaceTerm = ref<string>("");
 
-    const find = () => editor.value?.commands.setSearchTerm(searchTerm.value)
-    
+    const updateSearchReplace = () => {
+      if (!editor.value) return;
+      editor.value.commands.setSearchTerm(searchTerm.value);
+      editor.value.commands.setReplaceTerm(replaceTerm.value);
+    };
+
+    const debouncedUpdate = debounce(() => updateSearchReplace(), 500)
+
+    watch(
+      () => searchTerm.value.trim(),
+      (val, oldVal) => {
+        if (!val) clear();
+        val === oldVal ? null : debouncedUpdate();
+      }
+    );
 
     const replace = () => [];
 
@@ -73,7 +92,17 @@ export default {
 
     const replaceAll = () => [];
 
-    return { editor, bold, italic, searchTerm, replaceTerm, find, replace, clear, replaceAll };
+    return {
+      editor,
+      bold,
+      italic,
+      searchTerm,
+      replaceTerm,
+      updateSearchReplace,
+      replace,
+      clear,
+      replaceAll
+    };
   }
 };
 </script>
