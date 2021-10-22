@@ -7,11 +7,20 @@ declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     search: {
       /**
-       * Find text in editor
+       * Set search term in extension.
        */
       setSearchTerm: (searchTerm: string) => ReturnType,
+      /**
+       * Set replace term in extension.
+       */
       setReplaceTerm: (replaceTerm: string) => ReturnType,
+      /**
+       * Replace first instance of search result with given replace term.
+       */
       replace: () => ReturnType,
+      /**
+       * Replace all instances of search result with given replace term.
+       */
       replaceAll: () => ReturnType,
     }
   }
