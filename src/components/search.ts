@@ -17,29 +17,45 @@ declare module '@tiptap/core' {
   }
 }
 
+interface Result {
+  from: number;
+  to: number;
+}
+
+interface SearchOptions {
+  searchTerm: string;
+  replaceTerm: string;
+  results: Result[]
+}
+
+interface TextNodesWithPosition {
+  text: string;
+  pos: number;
+}
+
 const updateView = (state: EditorState<any>, dispatch: any) => dispatch(state.tr)
 
 const regex = (s: string): RegExp => new RegExp(s, "gi")
 
-function processSearches(doc: ProsemirrorNode, searchTerm: RegExp) {
-  const decorations: any[] = []
-  let mergedTextNodes: any[] = []
-  const results: any[] = [];
+function processSearches(doc: ProsemirrorNode, searchTerm: RegExp): { decorationsToReturn: DecorationSet, results: Result[] } {
+  const decorations: Decoration[] = []
+  let textNodesWithPosition: TextNodesWithPosition[] = []
+  const results: Result[] = [];
 
   let index = 0;
 
-  if (!searchTerm) return
+  if (!searchTerm) return { decorationsToReturn: DecorationSet.empty, results: [] }
 
   doc?.descendants((node, pos) => {
     if (node.isText) {
-      if (mergedTextNodes[index]) {
-        mergedTextNodes[index] = {
-          text: mergedTextNodes[index].text + node.text,
-          pos: mergedTextNodes[index].pos
+      if (textNodesWithPosition[index]) {
+        textNodesWithPosition[index] = {
+          text: textNodesWithPosition[index].text + node.text,
+          pos: textNodesWithPosition[index].pos
         }
       } else {
-        mergedTextNodes[index] = {
-          text: node.text,
+        textNodesWithPosition[index] = {
+          text: `${node.text}`,
           pos
         }
       }
@@ -48,10 +64,10 @@ function processSearches(doc: ProsemirrorNode, searchTerm: RegExp) {
     }
   });
 
-  mergedTextNodes = mergedTextNodes.filter(Boolean)
+  textNodesWithPosition = textNodesWithPosition.filter(Boolean)
 
-  for (let i = 0; i < mergedTextNodes.length; i++) {
-    const { text, pos } = mergedTextNodes[i]
+  for (let i = 0; i < textNodesWithPosition.length; i++) {
+    const { text, pos } = textNodesWithPosition[i]
 
     let m;
     while ((m = searchTerm.exec(text))) {
@@ -73,7 +89,7 @@ function processSearches(doc: ProsemirrorNode, searchTerm: RegExp) {
   }
 }
 
-const replace = (replaceTerm: string, results: any[], { state, dispatch }: any) => {
+const replace = (replaceTerm: string, results: Result[], { state, dispatch }: any) => {
   const firstResult = results[0]
 
   if (!firstResult) return
@@ -83,7 +99,7 @@ const replace = (replaceTerm: string, results: any[], { state, dispatch }: any) 
   if (dispatch) dispatch(state.tr.insertText(replaceTerm, from, to))
 }
 
-const rebaseNextResult = (replaceTerm: string, index: number, lastOffset: number, results: any[]): [number, any[]] | null => {
+const rebaseNextResult = (replaceTerm: string, index: number, lastOffset: number, results: Result[]): [number, Result[]] | null => {
   const nextIndex = index + 1
 
   if (!results[nextIndex]) return null
@@ -102,7 +118,7 @@ const rebaseNextResult = (replaceTerm: string, index: number, lastOffset: number
   return [offset, results]
 }
 
-const replaceAll = (replaceTerm: string, results: any[], { tr, dispatch }: any) => {
+const replaceAll = (replaceTerm: string, results: Result[], { tr, dispatch }: any) => {
   let offset = 0;
 
   let ourResults = results.slice();
@@ -132,10 +148,8 @@ export const Search = Extension.create({
   defaultOptions: {
     searchTerm: '',
     replaceTerm: '',
-    showSearchTerms: false,
-    decorations: [],
     results: [],
-  },
+  } as SearchOptions,
 
   addCommands() {
     return {
@@ -144,6 +158,7 @@ export const Search = Extension.create({
         this.options.results = []
 
         updateView(state, dispatch)
+
         return false
       },
       setReplaceTerm: (replaceTerm: string) => ({ state, dispatch }) => {
@@ -151,6 +166,7 @@ export const Search = Extension.create({
         this.options.results = []
 
         updateView(state, dispatch)
+
         return false
       },
       replace: () => ({ state, dispatch }) => {
@@ -193,8 +209,6 @@ export const Search = Extension.create({
             const { searchTerm } = oldThis.options
 
             if (docChanged || searchTerm) {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
               const { decorationsToReturn, results } = processSearches(doc, regex(searchTerm))
 
               oldThis.options.results = results
