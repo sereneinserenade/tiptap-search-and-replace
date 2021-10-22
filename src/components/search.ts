@@ -117,8 +117,8 @@ const replaceAll = (replaceTerm: string, results: any[], { tr, dispatch }: any) 
   if (!ourResults.length) return
 
   for (let i = 0; i < ourResults.length; i++) {
-    const { from , to } = ourResults[i];
-    
+    const { from, to } = ourResults[i];
+
     tr.insertText(replaceTerm, from, to)
 
     const rebaseNextResultResponse = rebaseNextResult(replaceTerm, i, offset, ourResults)
