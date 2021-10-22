@@ -90,7 +90,7 @@ const replace = (replaceTerm: string, results: any[], { state, dispatch }: any) 
   if (dispatch) dispatch(state.tr.insertText(replaceTerm, from, to))
 }
 
-const rebaseNextResult = (replaceTerm: string, index: number, lastOffset = 0, results: any[]): [number, any[]] | null => {
+const rebaseNextResult = (replaceTerm: string, index: number, lastOffset: number, results: any[]): [number, any[]] | null => {
   const nextIndex = index + 1
 
   if (!results[nextIndex]) return null
@@ -110,23 +110,24 @@ const rebaseNextResult = (replaceTerm: string, index: number, lastOffset = 0, re
 }
 
 const replaceAll = (replaceTerm: string, results: any[], { tr, dispatch }: any) => {
-  let offset: number;
+  let offset = 0;
 
-  if (!results.length) return
+  let ourResults = results.slice();
 
-  for (let i = 0; i < results.length; i++) {
-    const { from , to } = results[i];
+  if (!ourResults.length) return
+
+  for (let i = 0; i < ourResults.length; i++) {
+    const { from , to } = ourResults[i];
     
-    tr.insertText(replace, from, to)
+    tr.insertText(replaceTerm, from, to)
 
-    const rebaseNextResultResponse = rebaseNextResult(replaceTerm, i, offset, results)
+    const rebaseNextResultResponse = rebaseNextResult(replaceTerm, i, offset, ourResults)
 
     if (rebaseNextResultResponse) {
       offset = rebaseNextResultResponse[0]
-      results = rebaseNextResultResponse[1]
+      ourResults = rebaseNextResultResponse[1]
     }
   }
-
 
   dispatch(tr)
 }
