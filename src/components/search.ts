@@ -12,6 +12,7 @@ declare module '@tiptap/core' {
       setSearchTerm: (searchTerm: string) => ReturnType,
       setReplaceTerm: (replaceTerm: string) => ReturnType,
       replace: () => ReturnType,
+      replaceAll: () => ReturnType,
     }
   }
 }
@@ -89,6 +90,47 @@ const replace = (replaceTerm: string, results: any[], { state, dispatch }: any) 
   if (dispatch) dispatch(state.tr.insertText(replaceTerm, from, to))
 }
 
+const rebaseNextResult = (replaceTerm: string, index: number, lastOffset = 0, results: any[]): [number, any[]] | null => {
+  const nextIndex = index + 1
+
+  if (!results[nextIndex]) return null
+
+  const { from: currentFrom, to: currentTo } = results[index]
+
+  const offset = (currentTo - currentFrom - replaceTerm.length) + lastOffset
+
+  const { from, to } = results[nextIndex]
+
+  results[nextIndex] = {
+    to: to - offset,
+    from: from - offset,
+  }
+
+  return [offset, results]
+}
+
+const replaceAll = (replaceTerm: string, results: any[], { tr, dispatch }: any) => {
+  let offset: number;
+
+  if (!results.length) return
+
+  for (let i = 0; i < results.length; i++) {
+    const { from , to } = results[i];
+    
+    tr.insertText(replace, from, to)
+
+    const rebaseNextResultResponse = rebaseNextResult(replaceTerm, i, offset, results)
+
+    if (rebaseNextResultResponse) {
+      offset = rebaseNextResultResponse[0]
+      results = rebaseNextResultResponse[1]
+    }
+  }
+
+
+  dispatch(tr)
+}
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const Search = Extension.create({
   name: 'search',
@@ -123,6 +165,17 @@ export const Search = Extension.create({
         replace(replaceTerm, results, { state, dispatch })
 
         this.options.results.shift()
+
+        updateView(state, dispatch)
+
+        return false
+      },
+      replaceAll: () => ({ state, tr, dispatch }) => {
+        const { replaceTerm, results } = this.options
+
+        replaceAll(replaceTerm, results, { tr, dispatch })
+
+        this.options.results = []
 
         updateView(state, dispatch)
 

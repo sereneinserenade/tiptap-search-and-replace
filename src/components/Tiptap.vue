@@ -100,7 +100,7 @@ export default {
 
     const clear = () => [];
 
-    const replaceAll = () => [];
+    const replaceAll = () => editor.value?.commands.replaceAll();
 
     return {
       editor,
