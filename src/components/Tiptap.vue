@@ -98,7 +98,7 @@ export default {
 
     const replace = () => editor.value?.commands.replace();
 
-    const clear = () => [];
+    const clear = () => (searchTerm.value = replaceTerm.value = "");
 
     const replaceAll = () => editor.value?.commands.replaceAll();
 
