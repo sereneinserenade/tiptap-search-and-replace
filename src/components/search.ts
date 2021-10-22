@@ -37,7 +37,6 @@ interface SearchOptions {
   results: Result[];
   searchResultClass: string;
   caseSensitive: boolean;
-  alwaysSearch: boolean;
   disableRegex: boolean;
 }
 
@@ -166,7 +165,6 @@ export const Search = Extension.create({
     results: [],
     searchResultClass: 'search-result',
     caseSensitive: false,
-    alwaysSearch: false,
     disableRegex: false,
   } as SearchOptions,
 
@@ -225,7 +223,7 @@ export const Search = Extension.create({
             return DecorationSet.empty
           },
           apply({ doc, docChanged }) {
-            const { searchTerm, searchResultClass, disableRegex, caseSensitive, alwaysSearch } = extensionThis.options
+            const { searchTerm, searchResultClass, disableRegex, caseSensitive } = extensionThis.options
 
             if (docChanged && searchTerm) {
               const { decorationsToReturn, results } = processSearches(doc, regex(searchTerm, disableRegex, caseSensitive), searchResultClass)
