@@ -1,6 +1,6 @@
 import { Extension } from '@tiptap/core'
 import { Decoration, DecorationSet } from 'prosemirror-view'
-import { Plugin, PluginKey, TextSelection } from 'prosemirror-state'
+import { EditorState, Plugin, PluginKey, TextSelection } from 'prosemirror-state'
 import { Node as ProsemirrorNode } from 'prosemirror-model'
 
 declare module '@tiptap/core' {
@@ -9,8 +9,8 @@ declare module '@tiptap/core' {
       /**
        * Find text in editor
        */
-      setSearchTerm: (searchTerm: string) => void,
-      setReplaceTerm: (replaceTerm: string) => void,
+      setSearchTerm: (searchTerm: string) => ReturnType,
+      setReplaceTerm: (replaceTerm: string) => ReturnType,
     }
   }
 }
@@ -49,44 +49,57 @@ export interface SearchStorage {
   decorations: any[],
 }
 
+const updateView = (state: EditorState<any>, dispatch: any) => {
+  dispatch(state.tr)
+}
+
 // eslint-disable-next-line @typescript-eslint/ban-types
-export const Search = Extension.create<{}, SearchStorage>({
+export const Search = Extension.create({
   name: 'search',
 
-  addStorage() {
-    return {
-      searchTerm: '',
-      replaceTerm: '',
-      showSearchTerms: false,
-      decorations: [],
-    }
+  defaultOptions: {
+    searchTerm: 'rep',
+    replaceTerm: '',
+    showSearchTerms: false,
+    decorations: [],
   },
 
   addCommands() {
     return {
-      setSearchTerm: (searchTerm: string) => () => {
-        debugger
-        this.storage.searchTerm = searchTerm
-        console.log(this.storage)
+      setSearchTerm: (searchTerm: string) => ({ state, dispatch }) => {
+        this.options.searchTerm = searchTerm
+        updateView(state, dispatch)
+        return false
       },
-      setReplaceTerm: (replaceTerm: string) => () => {
-        this.storage.replaceTerm = replaceTerm
+      setReplaceTerm: (replaceTerm: string) => ({ state, dispatch }) => {
+        this.options.replaceTerm = replaceTerm
+        updateView(state, dispatch)
+        return false
       }
     }
   },
 
+  onUpdate() {
+    this.options.searchTerm = 'amazing'
+  },
+
   addProseMirrorPlugins() {
-    const { searchTerm, replaceTerm, showSearchTerms } = this.storage;
+    // const { searchTerm, replaceTerm, showSearchTerms } = this.storage;
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const oldThis = this;
 
     return [
       new Plugin({
         key: new PluginKey('search'),
         state: {
           init(_, { doc }) {
+            const searchTerm = oldThis.options.searchTerm
             return processSearches(doc, searchTerm)
           },
           apply(transaction, oldState) {
-            return transaction.docChanged
+            const searchTerm = oldThis.options.searchTerm
+            return transaction.docChanged || searchTerm
               // ? runAllLinterPlugins(transaction.doc, plugins)
               ? processSearches(transaction.doc, searchTerm)
               : oldState

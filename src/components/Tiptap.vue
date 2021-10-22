@@ -64,9 +64,7 @@ export default {
 
     const replaceTerm = ref<string>("");
 
-    const find = () => {
-      if (editor.value) editor.value.storage.search.searchTerm = searchTerm.value
-    }
+    const find = () => editor.value?.commands.setSearchTerm(searchTerm.value)
     
 
     const replace = () => [];
@@ -84,6 +82,10 @@ export default {
 .menubar {
   display: flex;
   gap: 1em;
+}
+
+.search-result {
+  background: rgb(255, 217, 0);
 }
 
 .ProseMirror {
