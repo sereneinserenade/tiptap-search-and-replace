@@ -34,7 +34,11 @@ interface Result {
 interface SearchOptions {
   searchTerm: string;
   replaceTerm: string;
-  results: Result[]
+  results: Result[];
+  searchResultClass: string;
+  caseSensitive: boolean;
+  alwaysSearch: boolean;
+  disableRegex: boolean;
 }
 
 interface TextNodesWithPosition {
@@ -44,9 +48,11 @@ interface TextNodesWithPosition {
 
 const updateView = (state: EditorState<any>, dispatch: any) => dispatch(state.tr)
 
-const regex = (s: string): RegExp => new RegExp(s, "gi")
+const regex = (s: string, disableRegex: boolean, caseSensitive: boolean): RegExp => {
+  return RegExp(disableRegex ? s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') : s, caseSensitive ? 'gui' : 'gu')
+}
 
-function processSearches(doc: ProsemirrorNode, searchTerm: RegExp): { decorationsToReturn: DecorationSet, results: Result[] } {
+function processSearches(doc: ProsemirrorNode, searchTerm: RegExp, searchResultClass: string): { decorationsToReturn: DecorationSet, results: Result[] } {
   const decorations: Decoration[] = []
   let textNodesWithPosition: TextNodesWithPosition[] = []
   const results: Result[] = [];
@@ -90,7 +96,7 @@ function processSearches(doc: ProsemirrorNode, searchTerm: RegExp): { decoration
   }
 
 
-  results.forEach(r => decorations.push(Decoration.inline(r.from, r.to, { class: "search-result" })))
+  results.forEach(r => decorations.push(Decoration.inline(r.from, r.to, { class: searchResultClass })))
 
   return {
     decorationsToReturn: DecorationSet.create(doc, decorations),
@@ -158,6 +164,10 @@ export const Search = Extension.create({
     searchTerm: '',
     replaceTerm: '',
     results: [],
+    searchResultClass: 'search-result',
+    caseSensitive: false,
+    alwaysSearch: false,
+    disableRegex: false,
   } as SearchOptions,
 
   addCommands() {
@@ -205,7 +215,7 @@ export const Search = Extension.create({
 
   addProseMirrorPlugins() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const oldThis = this;
+    const extensionThis = this;
 
     return [
       new Plugin({
@@ -215,12 +225,12 @@ export const Search = Extension.create({
             return DecorationSet.empty
           },
           apply({ doc, docChanged }) {
-            const { searchTerm } = oldThis.options
+            const { searchTerm, searchResultClass, disableRegex, caseSensitive, alwaysSearch } = extensionThis.options
 
-            if (docChanged || searchTerm) {
-              const { decorationsToReturn, results } = processSearches(doc, regex(searchTerm))
+            if (docChanged && searchTerm) {
+              const { decorationsToReturn, results } = processSearches(doc, regex(searchTerm, disableRegex, caseSensitive), searchResultClass)
 
-              oldThis.options.results = results
+              extensionThis.options.results = results
 
               return decorationsToReturn
             } else {
