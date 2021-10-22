@@ -1,37 +1,32 @@
 <template>
-  <div class="menubar">
-    <button @click="bold">
-      Bold
-    </button>
-    <button @click="italic">
-      Italic
-    </button>
+  <div class="tiptap">
+    <div class="menubar">
+      <input
+        @keydown.enter.prevent="updateSearchReplace"
+        type="text"
+        placeholder="Search..."
+        v-model="searchTerm"
+      />
 
-    <input
-      @keydown.enter.prevent="updateSearchReplace"
-      type="text"
-      placeholder="Search..."
-      v-model="searchTerm"
-    />
+      <input
+        @keypress.enter.prevent="replace"
+        type="text"
+        placeholder="Replace..."
+        v-model="replaceTerm"
+      />
 
-    <input
-      @keypress.enter.prevent="replace"
-      type="text"
-      placeholder="Replace..."
-      v-model="replaceTerm"
-    />
-
-    <button @click="clear">
-      Clear
-    </button>
-    <button @click="replace">
-      Replace
-    </button>
-    <button @click="replaceAll">
-      Replace All
-    </button>
+      <button @click="clear">
+        Clear
+      </button>
+      <button @click="replace">
+        Replace
+      </button>
+      <button @click="replaceAll">
+        Replace All
+      </button>
+    </div>
+    <editor-content :editor="editor" />
   </div>
-  <editor-content :editor="editor" />
 </template>
 
 <script lang="ts">
@@ -111,18 +106,43 @@ export default {
 </script>
 
 <style lang="scss">
-.menubar {
+.tiptap {
   display: flex;
-  gap: 1em;
-}
+  flex-direction: column;
 
-.search-result {
-  background: rgb(255, 217, 0);
-}
+  .menubar {
+    display: flex;
+    gap: 1em;
+    background: rgba(128, 128, 128, 0.25);
+    padding: 0.5em;
+    border-radius: 6px;
+    justify-content: center;
 
-.ProseMirror {
-  outline: none !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-    "Open Sans", "Helvetica Neue", sans-serif;
+    input {
+      height: 2em;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      padding: 0.4em;
+    }
+
+    button {
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: white;
+    }
+
+  }
+
+  .search-result {
+    background: rgb(255, 217, 0);
+  }
+
+  .ProseMirror {
+    outline: none !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
+      "Open Sans", "Helvetica Neue", sans-serif;
+  }
 }
 </style>
