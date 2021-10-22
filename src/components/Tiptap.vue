@@ -90,10 +90,7 @@ export default {
 
     watch(
       () => replaceTerm.value.trim(),
-      (val, oldVal) => {
-        if (!val) clear();
-        val === oldVal ? null : updateSearchReplace();
-      }
+      (val, oldVal) => (val === oldVal ? null : updateSearchReplace())
     );
 
     const replace = () => editor.value?.commands.replace();
