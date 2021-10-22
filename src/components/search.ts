@@ -2,6 +2,7 @@ import { Extension } from '@tiptap/core'
 import { Decoration, DecorationSet } from 'prosemirror-view'
 import { EditorState, Plugin, PluginKey } from 'prosemirror-state'
 import { Node as ProsemirrorNode } from 'prosemirror-model'
+import { CommandProps } from '@tiptap/vue-3'
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -11,6 +12,7 @@ declare module '@tiptap/core' {
        */
       setSearchTerm: (searchTerm: string) => ReturnType,
       setReplaceTerm: (replaceTerm: string) => ReturnType,
+      replace: () => ReturnType,
     }
   }
 }
@@ -78,6 +80,18 @@ function processSearches(doc: ProsemirrorNode, searchTerm: RegExp) {
   }
 }
 
+const replace = (replaceTerm: string, results: any[], { editor, state, dispatch }: CommandProps, searchTerm: string) => {
+  const firstResult = results[0]
+
+  if (!firstResult) return
+
+  const { from, to } = results[0]
+
+  if (dispatch) dispatch(state.tr.insertText(replaceTerm, from, to))
+
+  editor.commands.setSearchTerm(searchTerm)
+}
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const Search = Extension.create({
   name: 'search',
@@ -100,6 +114,15 @@ export const Search = Extension.create({
       setReplaceTerm: (replaceTerm: string) => ({ state, dispatch }) => {
         this.options.replaceTerm = replaceTerm
         updateView(state, dispatch)
+        return false
+      },
+      replace: () => (commandProps) => {
+        const { replaceTerm, searchTerm, results } = this.options
+
+        replace(replaceTerm, results, commandProps, searchTerm)
+
+        this.options.results.shift()
+
         return false
       }
     }

@@ -83,7 +83,15 @@ export default {
       }
     );
 
-    const replace = () => [];
+    watch(
+      () => replaceTerm.value.trim(),
+      (val, oldVal) => {
+        if (!val) clear();
+        val === oldVal ? null : updateSearchReplace();
+      }
+    );
+
+    const replace = () => editor.value?.commands.replace();
 
     const clear = () => [];
 
