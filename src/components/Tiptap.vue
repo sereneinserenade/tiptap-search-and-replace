@@ -36,7 +36,7 @@
 <script lang="ts">
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
-import { ref, watch, watchEffect } from "vue";
+import { ref, watch } from "vue";
 import { debounce } from "lodash";
 import { Search } from "./search";
 
