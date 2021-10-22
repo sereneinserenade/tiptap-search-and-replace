@@ -17,13 +17,6 @@ declare module '@tiptap/core' {
   }
 }
 
-export interface SearchStorage {
-  searchTerm: string,
-  replaceTerm: string,
-  showSearchTerms: boolean,
-  decorations: any[],
-}
-
 const updateView = (state: EditorState<any>, dispatch: any) => dispatch(state.tr)
 
 const regex = (s: string): RegExp => new RegExp(s, "gi")
