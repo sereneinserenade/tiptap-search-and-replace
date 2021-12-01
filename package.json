@@ -1,6 +1,6 @@
 {
   "name": "@sereneinserenade/tiptap-search-n-replace",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Search and Replace extension for TipTap2(https://tiptap.dev).",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
