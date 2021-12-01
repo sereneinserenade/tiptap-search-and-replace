@@ -1,7 +1,6 @@
 {
-  "name": "tiptap-search-n-replace",
+  "name": "@sereneinserenade/tiptap-search-n-replace",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "start": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
@@ -42,5 +41,24 @@
       "vue-cli-service lint",
       "git add"
     ]
-  }
+  },
+  "description": "Search and replace extension for TipTap 2.",
+  "main": "src/index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sereneinserenade/tiptap-search-n-replace-demo.git"
+  },
+  "keywords": [
+    "tiptap",
+    "searchNReplace"
+  ],
+  "author": "Jeet Mandaliya (github: sereneinserenade)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sereneinserenade/tiptap-search-n-replace-demo/issues"
+  },
+  "homepage": "https://github.com/sereneinserenade/tiptap-search-n-replace-demo#readme"
 }
