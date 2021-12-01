@@ -6,7 +6,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "test": "npm run test",
-    "build": "tsc"
+    "build": "tsc",
+    "publish": "tsc && npm publish && rm -rf ./dist"
   },
   "prepublish": "tsc",
   "repository": {
