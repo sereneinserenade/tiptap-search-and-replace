@@ -1,9 +1,8 @@
-# tiptap-search-n-replace
+<h1 align="center"> Tiptap 2 Search and Replace Demo </h1>
 
+- Try it out at https://sereneinserenade.github.io/tiptap-search-n-replace-demo/.
 
-
-https://user-images.githubusercontent.com/45892659/138535328-b80552a7-792a-4392-b247-302f0405c8fa.mov
-
+https://user-images.githubusercontent.com/45892659/163356581-5fd38888-4e29-41d9-b64f-d17948ef7a16.mov
 
 ## How to use
 
