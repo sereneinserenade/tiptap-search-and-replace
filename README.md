@@ -24,6 +24,8 @@ const editor = new Editor({
 });
 ```
 
+---
+
 <details>
   <summary> Stuff that nobody really cares about </summary>
 
