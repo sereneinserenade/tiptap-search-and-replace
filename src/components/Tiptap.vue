@@ -49,8 +49,11 @@ export default {
   setup() {
     const editor = useEditor({
       content:
-        "<p> Test for search and replace. search for 'amazing' and replace it with 'awe-inspiring' or 'astonishing'.</p>",
-      extensions: [StarterKit, SearchNReplace]
+        "<h2>Test for search and replace. Search for 'amazing' and replace it with 'awe-inspiring' or 'astonishing'.</h2><p></p><h3>A ⭐️ to the repo if you 👍 / ❤️ what I'm doing would be much appreciated.</h3>",
+      extensions: [StarterKit, SearchNReplace],
+      onUpdate: ({ editor }) => {
+        console.log(editor.getHTML())
+      }
     });
 
     const searchTerm = ref<string>("replace");
@@ -139,8 +142,7 @@ export default {
     padding: 1em 2px;
 
     .search-result {
-      background-color: rgb(255, 217, 0);
-      color: black;
+      background-color: rgba(255, 217, 0, 0.5);
     }
   }
 }

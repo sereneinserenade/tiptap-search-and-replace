@@ -166,13 +166,15 @@ const replaceAll = (replaceTerm: string, results: Result[], { tr, dispatch }: an
 export const SearchNReplace = Extension.create<SearchOptions>({
   name: 'search',
 
-  defaultOptions: {
-    searchTerm: '',
-    replaceTerm: '',
-    results: [],
-    searchResultClass: 'search-result',
-    caseSensitive: false,
-    disableRegex: false,
+  addOptions() {
+    return {
+      searchTerm: '',
+      replaceTerm: '',
+      results: [],
+      searchResultClass: 'search-result',
+      caseSensitive: false,
+      disableRegex: false,
+    }
   },
 
   addCommands() {
