@@ -1,19 +1,23 @@
 <template>
   <div class="tiptap">
-    <div class="menubar">
-      <input
-        @keydown.enter.prevent="updateSearchReplace"
-        type="text"
-        placeholder="Search..."
-        v-model="searchTerm"
-      />
+    <section class="flex justify-between items-center">
+      <h2> Tiptap 2 Search-N-Replace </h2>
 
-      <input
-        @keypress.enter.prevent="replace"
-        type="text"
-        placeholder="Replace..."
-        v-model="replaceTerm"
-      />
+      <section>
+        <a class="flex gap-1" target="_blank" href="https://github.com/sereneinserenade/tiptap-search-n-replace-demo">
+          <img class="github-link" :src="GithubIcon" alt="Github Link" />
+
+          <h3>Repository</h3>
+        </a>
+      </section>
+
+    </section>
+
+    <hr>
+    <div class="menubar">
+      <input @keydown.enter.prevent="updateSearchReplace" type="text" placeholder="Search..." v-model="searchTerm" autofocus="true" />
+
+      <input @keypress.enter.prevent="replace" type="text" placeholder="Replace..." v-model="replaceTerm" />
 
       <button @click="clear">
         Clear
@@ -32,8 +36,10 @@
 <script lang="ts">
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
+
 import { SearchNReplace } from "./search";
+import GithubIcon from '../assets/github.svg'
 
 export default {
   components: {
@@ -43,13 +49,13 @@ export default {
   setup() {
     const editor = useEditor({
       content:
-        "<p> Test for search and replace. search for 'amazing' and replace it with 'awe-inspiring'.</p>",
+        "<p> Test for search and replace. search for 'amazing' and replace it with 'awe-inspiring' or 'astonishing'.</p>",
       extensions: [StarterKit, SearchNReplace]
     });
 
-    const searchTerm = ref<string>("");
+    const searchTerm = ref<string>("replace");
 
-    const replaceTerm = ref<string>("");
+    const replaceTerm = ref<string>("astonishing");
 
     const updateSearchReplace = () => {
       if (!editor.value) return;
@@ -61,7 +67,7 @@ export default {
       () => searchTerm.value.trim(),
       (val, oldVal) => {
         if (!val) clear();
-        val === oldVal ? null : updateSearchReplace();
+        if (val !== oldVal) updateSearchReplace()
       }
     );
 
@@ -76,6 +82,8 @@ export default {
 
     const replaceAll = () => editor.value?.commands.replaceAll();
 
+    onMounted(() => setTimeout(updateSearchReplace))
+
     return {
       editor,
       searchTerm,
@@ -83,7 +91,8 @@ export default {
       updateSearchReplace,
       replace,
       clear,
-      replaceAll
+      replaceAll,
+      GithubIcon
     };
   }
 };
@@ -93,40 +102,46 @@ export default {
 .tiptap {
   display: flex;
   flex-direction: column;
+  margin: 1em 0;
+
+  hr {
+    color: white;
+    width: 100%;
+    margin-bottom: 2rem;
+  }
 
   .menubar {
     display: flex;
     gap: 1em;
-    background: rgba(128, 128, 128, 0.25);
+    background-color: rgba(white, 0.25);
     padding: 0.5em;
     border-radius: 6px;
-    justify-content: center;
+    width: fit-content;
 
     input {
       height: 2em;
       border-radius: 6px;
       border: none;
       outline: none;
-      padding: 0.4em;
+      padding: 4px 8px;
     }
 
     button {
       border-radius: 6px;
       border: none;
       cursor: pointer;
-      background: white;
     }
-
   }
 
-  .search-result {
-    background: rgb(255, 217, 0);
-  }
 
   .ProseMirror {
     outline: none !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-      "Open Sans", "Helvetica Neue", sans-serif;
+    padding: 1em 2px;
+
+    .search-result {
+      background-color: rgb(255, 217, 0);
+      color: black;
+    }
   }
 }
 </style>

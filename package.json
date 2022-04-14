@@ -1,64 +1,20 @@
 {
-  "name": "@sereneinserenade/tiptap-search-n-replace",
-  "version": "0.1.0",
+  "name": "tiptap-search-n-replace-demo",
+  "private": true,
+  "version": "0.0.0",
   "scripts": {
-    "start": "vue-cli-service serve",
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@tiptap/starter-kit": "^2.0.0-beta.128",
-    "@tiptap/vue-3": "^2.0.0-beta.71",
-    "core-js": "^3.6.5",
-    "lodash": "^4.17.21",
-    "vue": "^3.0.0"
+    "@tiptap/starter-kit": "^2.0.0-beta.183",
+    "@tiptap/vue-3": "^2.0.0-beta.90",
+    "sass": "^1.50.0",
+    "vue": "^3.2.25"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.176",
-    "@typescript-eslint/eslint-plugin": "^4.18.0",
-    "@typescript-eslint/parser": "^4.18.0",
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-typescript": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0",
-    "@vue/eslint-config-airbnb": "^5.0.2",
-    "@vue/eslint-config-typescript": "^7.0.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-vue": "^7.0.0",
-    "lint-staged": "^9.5.0",
-    "node-sass": "^4.12.0",
-    "sass-loader": "^8.0.2",
-    "typescript": "~4.1.5"
-  },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.{js,jsx,vue,ts,tsx}": [
-      "vue-cli-service lint",
-      "git add"
-    ]
-  },
-  "description": "Search and replace extension for TipTap 2.",
-  "main": "src/index.js",
-  "directories": {
-    "doc": "docs"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sereneinserenade/tiptap-search-n-replace-demo.git"
-  },
-  "keywords": [
-    "tiptap",
-    "searchNReplace"
-  ],
-  "author": "Jeet Mandaliya (github: sereneinserenade)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sereneinserenade/tiptap-search-n-replace-demo/issues"
-  },
-  "homepage": "https://github.com/sereneinserenade/tiptap-search-n-replace-demo#readme"
+    "@vitejs/plugin-vue": "^2.3.1",
+    "vite": "^2.9.2"
+  }
 }
