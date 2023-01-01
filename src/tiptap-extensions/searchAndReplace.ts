@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import { Extension } from '@tiptap/core'
-import { Decoration, DecorationSet } from 'prosemirror-view'
-import { EditorState, Plugin, PluginKey } from 'prosemirror-state'
-import { Node as ProsemirrorNode } from 'prosemirror-model'
+import { Extension, Range } from "@tiptap/core"
+import { Decoration, DecorationSet } from "prosemirror-view"
+import { Plugin, PluginKey } from "prosemirror-state"
+import { Node as ProsemirrorNode } from "prosemirror-model"
 
-declare module '@tiptap/core' {
+declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     search: {
       /**
@@ -48,35 +48,24 @@ declare module '@tiptap/core' {
   }
 }
 
-interface Result {
-  from: number;
-  to: number;
-}
-
-interface SearchOptions {
-  searchTerm: string;
-  replaceTerm: string;
-  results: Result[];
-  searchResultClass: string;
-  caseSensitive: boolean;
-  disableRegex: boolean;
-}
-
 interface TextNodesWithPosition {
   text: string;
   pos: number;
 }
 
-const updateView = (state: EditorState<any>, dispatch: any) => dispatch(state.tr)
-
-const regex = (s: string, disableRegex: boolean, caseSensitive: boolean): RegExp => {
-  return RegExp(disableRegex ? s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') : s, caseSensitive ? 'gu' : 'gui')
+const getRegex = (s: string, disableRegex: boolean, caseSensitive: boolean): RegExp => {
+  return RegExp(disableRegex ? s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&") : s, caseSensitive ? "gu" : "gui")
 }
 
-function processSearches(doc: ProsemirrorNode, searchTerm: RegExp, searchResultClass: string): { decorationsToReturn: DecorationSet, results: Result[] } {
+interface ProcessedSearches {
+  decorationsToReturn: DecorationSet,
+  results: Range[]
+}
+
+function processSearches (doc: ProsemirrorNode, searchTerm: RegExp, searchResultClass: string): ProcessedSearches {
   const decorations: Decoration[] = []
   let textNodesWithPosition: TextNodesWithPosition[] = []
-  const results: Result[] = []
+  const results: Range[] = []
 
   let index = 0
 
@@ -105,12 +94,12 @@ function processSearches(doc: ProsemirrorNode, searchTerm: RegExp, searchResultC
   for (let i = 0; i < textNodesWithPosition.length; i += 1) {
     const { text, pos } = textNodesWithPosition[i]
 
-    const matches = [...text.matchAll(searchTerm)]
+    const matches = Array.from(text.matchAll(searchTerm)).filter(([ matchText ]) => matchText.trim())
 
     for (let j = 0; j < matches.length; j += 1) {
       const m = matches[j]
 
-      if (m[0] === '') break
+      if (m[0] === "") break
 
       if (m.index !== undefined) {
         results.push({
@@ -122,7 +111,7 @@ function processSearches(doc: ProsemirrorNode, searchTerm: RegExp, searchResultC
   }
 
   for (let i = 0; i < results.length; i += 1) {
-    const r = results[i];
+    const r = results[i]
     decorations.push(Decoration.inline(r.from, r.to, { class: searchResultClass }))
   }
 
@@ -132,7 +121,7 @@ function processSearches(doc: ProsemirrorNode, searchTerm: RegExp, searchResultC
   }
 }
 
-const replace = (replaceTerm: string, results: Result[], { state, dispatch }: any) => {
+const replace = (replaceTerm: string, results: Range[], { state, dispatch }: any) => {
   const firstResult = results[0]
 
   if (!firstResult) return
@@ -142,7 +131,7 @@ const replace = (replaceTerm: string, results: Result[], { state, dispatch }: an
   if (dispatch) dispatch(state.tr.insertText(replaceTerm, from, to))
 }
 
-const rebaseNextResult = (replaceTerm: string, index: number, lastOffset: number, results: Result[]): [number, Result[]] | null => {
+const rebaseNextResult = (replaceTerm: string, index: number, lastOffset: number, results: Range[]): [number, Range[]] | null => {
   const nextIndex = index + 1
 
   if (!results[nextIndex]) return null
@@ -158,116 +147,128 @@ const rebaseNextResult = (replaceTerm: string, index: number, lastOffset: number
     from: from - offset,
   }
 
-  return [offset, results]
+  return [ offset, results ]
 }
 
-const replaceAll = (replaceTerm: string, results: Result[], { tr, dispatch }: any) => {
+const replaceAll = (replaceTerm: string, results: Range[], { tr, dispatch }: any) => {
   let offset = 0
 
-  let ourResults = results.slice()
+  let resultsCopy = results.slice()
 
-  if (!ourResults.length) return
+  if (!resultsCopy.length) return
 
-  for (let i = 0; i < ourResults.length; i += 1) {
-    const { from, to } = ourResults[i]
+  for (let i = 0; i < resultsCopy.length; i += 1) {
+    const { from, to } = resultsCopy[i]
 
     tr.insertText(replaceTerm, from, to)
 
-    const rebaseNextResultResponse = rebaseNextResult(replaceTerm, i, offset, ourResults)
+    const rebaseNextResultResponse = rebaseNextResult(replaceTerm, i, offset, resultsCopy)
 
-    if (rebaseNextResultResponse) {
-      offset = rebaseNextResultResponse[0]
-      ourResults = rebaseNextResultResponse[1]
-    }
+    if (!rebaseNextResultResponse) continue
+
+    offset = rebaseNextResultResponse[0]
+    resultsCopy = rebaseNextResultResponse[1]
   }
 
   dispatch(tr)
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const SearchNReplace = Extension.create<SearchOptions>({
-  name: 'search',
+export const searchAndReplacePluginKey = new PluginKey("searchAndReplacePlugin")
 
-  addOptions() {
+interface SearchAndReplaceOptions {
+  searchResultClass: string;
+  caseSensitive: boolean;
+  disableRegex: boolean;
+}
+
+interface SearchAndReplaceStorage {
+  searchTerm: string;
+  replaceTerm: string;
+  results: Range[];
+  lastSearchTerm: string;
+}
+
+export const SearchAndReplace = Extension.create<SearchAndReplaceOptions, SearchAndReplaceStorage>({
+  name: "searchAndReplace",
+
+  addOptions () {
     return {
-      searchTerm: '',
-      replaceTerm: '',
-      results: [],
-      searchResultClass: 'search-result',
+      searchResultClass: "search-result",
       caseSensitive: false,
       disableRegex: false,
     }
   },
 
-  addCommands() {
+  addStorage () {
     return {
-      setSearchTerm: (searchTerm: string) => ({ state, dispatch }) => {
-        this.options.searchTerm = searchTerm
-        this.options.results = []
+      searchTerm: "",
+      replaceTerm: "",
+      results: [],
+      lastSearchTerm: "",
+    }
+  },
 
-        updateView(state, dispatch)
-
-        return false
-      },
-      setReplaceTerm: (replaceTerm: string) => ({ state, dispatch }) => {
-        this.options.replaceTerm = replaceTerm
-        this.options.results = []
-
-        updateView(state, dispatch)
+  addCommands () {
+    return {
+      setSearchTerm: (searchTerm: string) => ({ editor }) => {
+        editor.storage.searchAndReplace.searchTerm = searchTerm
 
         return false
       },
-      replace: () => ({ state, dispatch }) => {
-        const { replaceTerm, results } = this.options
+      setReplaceTerm: (replaceTerm: string) => ({ editor }) => {
+        editor.storage.searchAndReplace.replaceTerm = replaceTerm
+
+        return false
+      },
+      replace: () => ({ editor, state, dispatch }) => {
+        const { replaceTerm, results } = editor.storage.searchAndReplace
 
         replace(replaceTerm, results, { state, dispatch })
 
-        this.options.results.shift()
-
-        updateView(state, dispatch)
-
         return false
       },
-      replaceAll: () => ({ state, tr, dispatch }) => {
-        const { replaceTerm, results } = this.options
+      replaceAll: () => ({ editor, tr, dispatch }) => {
+        const { replaceTerm, results } = editor.storage.searchAndReplace
 
         replaceAll(replaceTerm, results, { tr, dispatch })
-
-        this.options.results = []
-
-        updateView(state, dispatch)
 
         return false
       },
     }
   },
 
-  addProseMirrorPlugins() {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const extensionThis = this
+  addProseMirrorPlugins () {
+    const editor = this.editor
+    const { searchResultClass, disableRegex, caseSensitive } = this.options
+
+    const setLastSearchTerm = (t) => editor.storage.searchAndReplace.lastSearchTerm = t
 
     return [
       new Plugin({
-        key: new PluginKey('search'),
+        key: searchAndReplacePluginKey,
         state: {
-          init() {
-            return DecorationSet.empty
-          },
-          apply({ doc, docChanged }) {
-            const { searchTerm, searchResultClass, disableRegex, caseSensitive } = extensionThis.options
+          init: () => DecorationSet.empty,
+          apply ({ doc, docChanged }, oldState) {
+            const { searchTerm, lastSearchTerm } = editor.storage.searchAndReplace
 
-            if (docChanged || searchTerm) {
-              const { decorationsToReturn, results } = processSearches(doc, regex(searchTerm, disableRegex, caseSensitive), searchResultClass)
+            if (!docChanged && lastSearchTerm === searchTerm) return oldState
 
-              extensionThis.options.results = results
+            setLastSearchTerm(searchTerm)
 
-              return decorationsToReturn
-            }
-            return DecorationSet.empty
+            if (!searchTerm) return DecorationSet.empty
+
+            const {
+              decorationsToReturn,
+              results,
+            } = processSearches(doc, getRegex(searchTerm, disableRegex, caseSensitive), searchResultClass)
+
+            editor.storage.searchAndReplace.results = results
+
+            return decorationsToReturn
           },
         },
         props: {
-          decorations(state) {
+          decorations (state) {
             return this.getState(state)
           },
         },

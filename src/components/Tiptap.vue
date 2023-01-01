@@ -1,7 +1,7 @@
 <template>
   <div class="tiptap">
-    <section class="flex justify-between items-center">
-      <h2> Tiptap 2 Search-N-Replace </h2>
+    <section class="flex justify-between items-center mb-6">
+      <h2 class="text-3xl font-bold"> Tiptap 2 Search-N-Replace </h2>
 
       <section>
         <a class="flex gap-1" target="_blank" href="https://github.com/sereneinserenade/tiptap-search-n-replace-demo">
@@ -10,26 +10,44 @@
           <h3>Repository</h3>
         </a>
       </section>
-
     </section>
 
-    <hr>
-    <div class="menubar">
-      <input @keydown.enter.prevent="updateSearchReplace" type="text" placeholder="Search..." v-model="searchTerm" autofocus="true" />
+    <div class="flex flex-col gap-6">
+      <section class="flex gap-6">
+        <div>
+          <label for="search-term" class="block text-sm font-medium text-gray-700">Search</label>
+          <div class="mt-1">
+            <input v-model="searchTerm" @keydown.enter.prevent="updateSearchReplace" type="text" placeholder="Search..."
+              autofocus="true"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+          </div>
+        </div>
 
-      <input @keypress.enter.prevent="replace" type="text" placeholder="Replace..." v-model="replaceTerm" />
+        <div>
+          <label for="search-term" class="block text-sm font-medium text-gray-700">Replace</label>
+          <div class="mt-1">
+            <input v-model="replaceTerm" @keydown.enter.prevent="replace" type="text" placeholder="Replace..."
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+          </div>
+        </div>
+      </section>
 
-      <button @click="clear">
-        Clear
-      </button>
-      <button @click="replace">
-        Replace
-      </button>
-      <button @click="replaceAll">
-        Replace All
-      </button>
+      <span class="isolate inline-flex rounded-md">
+        <button @click="clear" type="button"
+          class="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+          Clear
+        </button>
+        <button @click="replace" type="button"
+          class="relative -ml-px inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+          Replace
+        </button>
+        <button @click="replaceAll" type="button"
+          class="relative -ml-px inline-flex items-center rounded-r-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+          Replace All
+        </button>
+      </span>
     </div>
-    <editor-content :editor="editor" />
+    <editor-content class="prose" :editor="editor" />
   </div>
 </template>
 
@@ -38,7 +56,7 @@ import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import { onMounted, ref, watch } from "vue";
 
-import { SearchNReplace } from "./search";
+import { SearchAndReplace } from "../tiptap-extensions/searchAndReplace";
 import GithubIcon from '../assets/github.svg'
 
 export default {
@@ -49,16 +67,19 @@ export default {
   setup() {
     const editor = useEditor({
       content:
-        "<h2>Test for search and replace. Search for 'amazing' and replace it with 'awe-inspiring' or 'astonishing'.</h2><p></p><h3>A ⭐️ to the repo if you 👍 / ❤️ what I'm doing would be much appreciated.</h3>",
-      extensions: [StarterKit, SearchNReplace],
+        "<h3><strong>What’s Tiptap?</strong></h3><p></p><p>tiptap is a headless wrapper around ProseMirror – a toolkit for building rich text WYSIWYG editors, which is already in use at many well-known companies such as <em>New York Times</em>, <em>The Guardian</em> or <em>Atlassian</em>.</p><p>Create exactly the rich text editor you want out of customizable building blocks. Tiptap comes with sensible defaults, a lot of extensions and a friendly API to customize every aspect. It’s backed by a welcoming community, open source, and free.</p><p></p><h2>This is tiptap search and replace extension.</h2><h3>A ⭐️ to the repo if you 👍 / ❤️ what I'm doing would be much appreciated.</h3>",
+      extensions: [
+        StarterKit,
+        SearchAndReplace.configure()
+      ],
       onUpdate: ({ editor }) => {
         console.log(editor.getHTML())
       }
     });
 
-    const searchTerm = ref<string>("replace");
+    const searchTerm = ref<string>("tiptap");
 
-    const replaceTerm = ref<string>("astonishing");
+    const replaceTerm = ref<string>("ProseMirror");
 
     const updateSearchReplace = () => {
       if (!editor.value) return;
@@ -106,36 +127,6 @@ export default {
   display: flex;
   flex-direction: column;
   margin: 1em 0;
-
-  hr {
-    color: white;
-    width: 100%;
-    margin-bottom: 2rem;
-  }
-
-  .menubar {
-    display: flex;
-    gap: 1em;
-    background-color: rgba(white, 0.25);
-    padding: 0.5em;
-    border-radius: 6px;
-    width: fit-content;
-
-    input {
-      height: 2em;
-      border-radius: 6px;
-      border: none;
-      outline: none;
-      padding: 4px 8px;
-    }
-
-    button {
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-    }
-  }
-
 
   .ProseMirror {
     outline: none !important;
