@@ -18,6 +18,15 @@ https://user-images.githubusercontent.com/45892659/163356581-5fd38888-4e29-41d9-
 
 ## How to use
 
+> **Note**: npm version is not up-to-date. Just copy paste [the extension](./src/tiptap-extensions/searchAndReplace.ts) in your code and it should work
+
+**Ideally you should keep track of these states in your code, but if you absolutely need to read the `searchTerm` and `replaceTerm` from extension, here's the code.**
+```ts
+const searchTerm: string = editor.storage.searchAndReplace.searchTerm
+const replaceTerm: string = editor.storage.searchAndReplace.replaceTerm
+```
+
+
 I've published it as an [npm package](https://www.npmjs.com/package/@sereneinserenade/tiptap-extension-search-n-replace) so you can either directly install it, 
  
 <details>
