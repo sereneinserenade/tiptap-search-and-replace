@@ -33,19 +33,16 @@ I've published it as an [npm package](https://www.npmjs.com/package/@sereneinser
   <summary> with NPM </summary>
 
 ```
-npm i @sereneinserenade/tiptap-extension-search-n-replace
+npm i @sereneinserenade/tiptap-search-and-replace
 ```
 </details>
 <details>
   <summary> with Yarn </summary>
 
 ```
-yarn add @sereneinserenade/tiptap-extension-search-n-replace
+yarn add @sereneinserenade/tiptap-search-and-replace
 ```
 </details>
-
-**or you can just** copy-paste [`search.ts`](src/components/search.ts) file in your own repo and import `SearchNReplace` from that file and use that as an extension. For more details see [`Tiptap.vue`](src/components/Tiptap.vue#L50-L88) or the example implementations below.
-
 
 ### Here are example implementations in Vue and React
 
