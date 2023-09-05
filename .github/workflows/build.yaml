@@ -9,6 +9,8 @@ jobs:
   build-and-deploy:
     concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./demos/vue
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
@@ -16,24 +18,20 @@ jobs:
       - name: Setup Node 16
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-
-      - name: Gimme node_modules Cache
-        uses: actions/cache@v3
-        id: gimme_cache
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          node-version: "16"
+          cache: "npm"
+          cache-dependency-path: demos/react/package-lock.json
 
       - name: Install dependencies
         if: steps.gimme_cache.outputs.cache-hit == false
         run: npm install
+        working-directory: ${{env.working-directory}}
 
       - name: Build 🔧
         run: npm run build
+        working-directory: ${{env.working-directory}}
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.3.0
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: dist # The folder the action should deploy.
+          folder: ./demos/react/dist # The folder the action should deploy.
