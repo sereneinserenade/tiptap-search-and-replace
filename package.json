@@ -1,25 +1,45 @@
 {
-  "name": "tiptap-search-n-replace-demo",
-  "private": true,
-  "version": "0.0.0",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+  "name": "@sereneinserenade/tiptap-search-and-replace",
+  "version": "0.0.1",
+  "description": "Tiptap Extension for adding comments",
+  "keywords": [
+    "tiptap-search-and-replace-extension",
+    "tiptap",
+    "tiptap-search-and-replace",
+    "wysiwyg",
+    "text editor",
+    "prosemirror"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sereneinserenade/tiptap-search-and-replace/"
   },
-  "dependencies": {
-    "@tiptap/starter-kit": "^2.0.0-beta.209",
-    "@tiptap/vue-3": "^2.0.0-beta.209",
-    "sass": "^1.50.0",
-    "vue": "^3.2.25"
+  "author": "Jeet Mandaliya (github: sereneinserenade)",
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/sereneinserenade"
+  },
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && rollup -c",
+    "dev": "npm run clean && rollup -c -w"
   },
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.3",
-    "@tailwindcss/typography": "^0.5.8",
-    "@vitejs/plugin-vue": "^2.3.1",
-    "autoprefixer": "^10.4.13",
-    "postcss": "^8.4.20",
-    "tailwindcss": "^3.2.4",
-    "vite": "^2.9.2"
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@tiptap/core": "^2.1.8",
+    "@tiptap/pm": "^2.1.8",
+    "rollup": "^3.17.3",
+    "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "typescript": "^4.9.5"
+  },
+  "peerDependencies": {
+    "@tiptap/core": "^2.1.8",
+    "@tiptap/pm": "^2.1.8"
   }
 }

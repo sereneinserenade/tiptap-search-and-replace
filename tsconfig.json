@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "ES2015",
+    "lib": ["ES2020", "dom"],
+    "moduleResolution": "node",
+    "declaration": true,
+    "noEmit": true,
+    "rootDir": "./src",
+  }
+}

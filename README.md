@@ -1,6 +1,6 @@
 # Tiptap 2 Search and Replace
 
-Example of using SearchNReplace extension for [Tiptap 2](https://tiptap.dev). The repo for npm package [is here](https://github.com/sereneinserenade/tiptap-extension-search-n-replace) and here's the [link to npm package](https://www.npmjs.com/package/@sereneinserenade/tiptap-extension-search-n-replace).
+Search and Replace extension for [Tiptap 2](https://tiptap.dev). Published to npm as [@sereneinserenade/tiptap-extension-search-n-replace](https://www.npmjs.com/package/@sereneinserenade/tiptap-extension-search-n-replace).
 
 A ⭐️ to the repo if you 👍 / ❤️  what I'm doing would be much appreciated. If you're using this extension and making money from it, it'd be very kind of you to [:heart: Sponsor me](https://github.com/sponsors/sereneinserenade). If you're looking for a **dev to work you on your project's Rich Text Editor** with or as **a frontend developer, [DM me on Discord/Twitter/LinkedIn](https://github.com/sereneinserenade)👨‍💻🤩**.
 

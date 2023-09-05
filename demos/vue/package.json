@@ -1,0 +1,25 @@
+{
+  "name": "tiptap-search-n-replace-demo",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tiptap/starter-kit": "^2.0.0-beta.209",
+    "@tiptap/vue-3": "^2.0.0-beta.209",
+    "sass": "^1.50.0",
+    "vue": "^3.2.25"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/typography": "^0.5.8",
+    "@vitejs/plugin-vue": "^2.3.1",
+    "autoprefixer": "^10.4.13",
+    "postcss": "^8.4.20",
+    "tailwindcss": "^3.2.4",
+    "vite": "^2.9.2"
+  }
+}

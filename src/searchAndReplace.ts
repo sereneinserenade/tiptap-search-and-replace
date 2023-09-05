@@ -1,6 +1,6 @@
 // MIT License
 
-// Copyright (c) 2022 Jeet Mandaliya (Github Username: sereneinserenade)
+// Copyright (c) 2023 Jeet Mandaliya (Github Username: sereneinserenade)
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,9 @@
 // SOFTWARE.
 
 import { Extension, Range } from "@tiptap/core"
-import { Decoration, DecorationSet } from "prosemirror-view"
-import { Plugin, PluginKey } from "prosemirror-state"
-import { Node as ProsemirrorNode } from "prosemirror-model"
+import { Decoration, DecorationSet } from "@tiptap/pm/view"
+import { Plugin, PluginKey } from "@tiptap/pm/state"
+import { Node as PMNode } from "@tiptap/pm/model"
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
@@ -62,7 +62,7 @@ interface ProcessedSearches {
   results: Range[]
 }
 
-function processSearches (doc: ProsemirrorNode, searchTerm: RegExp, searchResultClass: string): ProcessedSearches {
+function processSearches (doc: PMNode, searchTerm: RegExp, searchResultClass: string): ProcessedSearches {
   const decorations: Decoration[] = []
   let textNodesWithPosition: TextNodesWithPosition[] = []
   const results: Range[] = []
@@ -175,13 +175,13 @@ const replaceAll = (replaceTerm: string, results: Range[], { tr, dispatch }: any
 
 export const searchAndReplacePluginKey = new PluginKey("searchAndReplacePlugin")
 
-interface SearchAndReplaceOptions {
+export interface SearchAndReplaceOptions {
   searchResultClass: string;
   caseSensitive: boolean;
   disableRegex: boolean;
 }
 
-interface SearchAndReplaceStorage {
+export interface SearchAndReplaceStorage {
   searchTerm: string;
   replaceTerm: string;
   results: Range[];
@@ -195,7 +195,7 @@ export const SearchAndReplace = Extension.create<SearchAndReplaceOptions, Search
     return {
       searchResultClass: "search-result",
       caseSensitive: false,
-      disableRegex: false,
+      disableRegex: true,
     }
   },
 
@@ -276,3 +276,5 @@ export const SearchAndReplace = Extension.create<SearchAndReplaceOptions, Search
     ]
   },
 })
+
+export default SearchAndReplace
