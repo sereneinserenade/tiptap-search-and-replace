@@ -4,7 +4,7 @@
       <h2 class="text-3xl font-bold"> Tiptap 2 Search-N-Replace </h2>
 
       <section>
-        <a class="flex gap-1" target="_blank" href="https://github.com/sereneinserenade/tiptap-search-n-replace-demo">
+        <a class="flex gap-1" target="_blank" href="https://github.com/sereneinserenade/tiptap-search-and-replace">
           <img class="github-link" :src="GithubIcon" alt="Github Link" />
 
           <h3>Repository</h3>

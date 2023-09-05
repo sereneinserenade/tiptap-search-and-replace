@@ -8,7 +8,7 @@ I've made a bunch of extensions for Tiptap 2, some of them are **Google Docs lik
 
 # Live Demo
 
-Try it out live at https://sereneinserenade.github.io/tiptap-search-n-replace-demo, and/or take a look at a demo-video below.
+Try it out live at https://sereneinserenade.github.io/tiptap-search-and-replace, and/or take a look at a demo-video below.
 
 <details> 
   <summary> <b>demo-video</b> </summary>
@@ -117,7 +117,7 @@ Show your ❤️ by ⭐️ing this repository! It means a lot.
 Clone the repo, do something, make a PR(or not). You know what's the drill. Looking forward to your PRs, you amazing devs.
 
 ## Awesome peeps, who've starred this repo 🚀! Thank you!
-[![Stargazers repo roster for @sereneinserenade/tiptap-search-n-replace-demo](https://reporoster.com/stars/dark/sereneinserenade/tiptap-search-n-replace-demo)](https://github.com/sereneinserenade/tiptap-search-n-replace-demo/stargazers)
+[![Stargazers repo roster for @sereneinserenade/tiptap-search-and-replace](https://reporoster.com/stars/dark/sereneinserenade/tiptap-search-and-replace)](https://github.com/sereneinserenade/tiptap-search-and-replace/stargazers)
 
 ---
 
