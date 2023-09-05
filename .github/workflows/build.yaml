@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: "16"
           cache: "npm"
-          cache-dependency-path: demos/react/package-lock.json
+          cache-dependency-path: demos/vue/package-lock.json
 
       - name: Install dependencies
         if: steps.gimme_cache.outputs.cache-hit == false
@@ -34,4 +34,4 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: ./demos/react/dist # The folder the action should deploy.
+          folder: ./demos/vue/dist # The folder the action should deploy.
