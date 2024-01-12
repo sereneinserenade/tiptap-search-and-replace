@@ -54,7 +54,7 @@ interface TextNodesWithPosition {
 }
 
 const getRegex = (s: string, disableRegex: boolean, caseSensitive: boolean): RegExp => {
-  return RegExp(disableRegex ? s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&") : s, caseSensitive ? "gu" : "gui")
+  return RegExp(disableRegex ? s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : s, caseSensitive ? "gu" : "gui");
 }
 
 interface ProcessedSearches {
