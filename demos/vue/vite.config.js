@@ -6,6 +6,9 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig(({ mode }) => {
   return {
     plugins: [vue()],
-    base: mode === 'production' ? '/tiptap-search-and-replace/' : '/'
+    base: mode === 'production' ? '/tiptap-search-and-replace/' : '/',
+    server: {
+      port: 3000,
+    }
   }
 })

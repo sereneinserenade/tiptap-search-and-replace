@@ -8,20 +8,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sereneinserenade/tiptap-search-and-replace": "^0.0.3",
-    "@tiptap/extension-link": "^2.1.8",
-    "@tiptap/starter-kit": "^2.0.0-beta.209",
-    "@tiptap/vue-3": "^2.0.0-beta.209",
-    "sass": "^1.50.0",
-    "vue": "^3.2.25"
+    "@sereneinserenade/tiptap-search-and-replace": "*",
+    "@tiptap/extension-link": "^2.x.x",
+    "@tiptap/starter-kit": "^2.x.x",
+    "@tiptap/vue-3": "^2.x.x",
+    "sass": "^1.69.7",
+    "vue": "^3.4.13"
   },
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.3",
-    "@tailwindcss/typography": "^0.5.8",
-    "@vitejs/plugin-vue": "^2.3.1",
-    "autoprefixer": "^10.4.13",
-    "postcss": "^8.4.20",
-    "tailwindcss": "^3.2.4",
-    "vite": "^2.9.2"
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.9",
+    "@vitejs/plugin-vue": "^5.0.3",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.33",
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.0.11"
   }
 }
