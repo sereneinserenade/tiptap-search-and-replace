@@ -1,6 +1,6 @@
 {
   "name": "@sereneinserenade/tiptap-search-and-replace",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Tiptap Extension for adding comments",
   "keywords": [
     "tiptap-search-and-replace-extension",
@@ -39,7 +39,7 @@
     "typescript": "^4.9.5"
   },
   "peerDependencies": {
-    "@tiptap/core": "^2.x",
-    "@tiptap/pm": "^2.x"
+    "@tiptap/core": "^2.x.x",
+    "@tiptap/pm": "^2.x.x"
   }
 }
