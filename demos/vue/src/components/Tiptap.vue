@@ -52,6 +52,22 @@
             />
           </div>
         </div>
+
+        <div>
+          <label
+            for="search-term"
+            class="block text-sm font-medium text-gray-700"
+            >Case sensitive</label
+          >
+          <div class="mt-1">
+            <input
+              v-model="caseSensitive"
+              @input="updateSearchReplace"
+              type="checkbox"
+              class="border-gray-300 rounded-md shadow-sm w-5 h-5 mt-2"
+            />
+          </div>
+        </div>
       </section>
 
       <span class="inline-flex rounded-md isolate">
@@ -61,6 +77,13 @@
           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
         >
           Clear
+        </button>
+        <button
+          @click="next"
+          type="button"
+          class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          Next
         </button>
         <button
           @click="replace"
@@ -76,6 +99,10 @@
         >
           Replace All
         </button>
+
+        <div class="block text-sm font-medium text-gray-700 py-2 px-4">
+          Results: {{ editor?.storage?.searchAndReplace?.results.length }}
+        </div>
       </span>
     </div>
     <editor-content class="prose" :editor="editor" />
@@ -111,28 +138,67 @@ const searchTerm = ref<string>("tiptap");
 
 const replaceTerm = ref<string>("ProseMirror");
 
-const updateSearchReplace = () => {
+const caseSensitive = ref<boolean>(false);
+
+const updateSearchReplace = (clearIndex: boolean = false) => {
   if (!editor.value) return;
+
+  if (clearIndex) editor.value.commands.resetIndex();
+
   editor.value.commands.setSearchTerm(searchTerm.value);
   editor.value.commands.setReplaceTerm(replaceTerm.value);
+  editor.value.commands.setCaseSensitive(caseSensitive.value);
+};
+
+const goToSelection = () => {
+  if (!editor.value) return;
+
+  const { results, resultIndex } = editor.value.storage.searchAndReplace;
+  const position: Range = results[resultIndex];
+
+  if (!position) return;
+
+  editor.value.commands.setTextSelection(position);
+
+  const { node } = editor.value.view.domAtPos(
+    editor.value.state.selection.anchor
+  );
+  node instanceof HTMLElement &&
+    node.scrollIntoView({ behavior: "smooth", block: "center" });
 };
 
 watch(
   () => searchTerm.value.trim(),
   (val, oldVal) => {
     if (!val) clear();
-    if (val !== oldVal) updateSearchReplace();
-  },
+    if (val !== oldVal) updateSearchReplace(true);
+  }
 );
 
 watch(
   () => replaceTerm.value.trim(),
-  (val, oldVal) => (val === oldVal ? null : updateSearchReplace()),
+  (val, oldVal) => (val === oldVal ? null : updateSearchReplace())
 );
 
-const replace = () => editor.value?.commands.replace();
+watch(
+  () => caseSensitive.value,
+  (val, oldVal) => (val === oldVal ? null : updateSearchReplace(true))
+);
 
-const clear = () => (searchTerm.value = replaceTerm.value = "");
+const replace = () => {
+  editor.value?.commands.replace();
+  goToSelection();
+};
+
+const next = () => {
+  editor.value?.commands.next();
+  goToSelection();
+};
+
+const clear = () => {
+  searchTerm.value = replaceTerm.value = "";
+  editor.value.commands.resetIndex();
+};
 
 const replaceAll = () => editor.value?.commands.replaceAll();
 
@@ -151,6 +217,10 @@ onMounted(() => setTimeout(updateSearchReplace));
 
     .search-result {
       background-color: rgba(255, 217, 0, 0.5);
+
+      &-current {
+        background-color: rgba(13, 255, 0, 0.5);
+      }
     }
   }
 }
