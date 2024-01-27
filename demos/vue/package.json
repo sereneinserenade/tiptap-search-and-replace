@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sereneinserenade/tiptap-search-and-replace": "^0.0.4",
+    "@sereneinserenade/tiptap-search-and-replace": "^0.1.1",
     "@tiptap/extension-link": "^2.x.x",
     "@tiptap/starter-kit": "^2.x.x",
     "@tiptap/vue-3": "^2.x.x",

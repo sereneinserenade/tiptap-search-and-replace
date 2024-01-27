@@ -122,8 +122,8 @@ import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import { onMounted, ref, watch } from "vue";
 
-// import SearchAndReplace from "@sereneinserenade/tiptap-search-and-replace";
-import { SearchAndReplace } from '../../../../src/searchAndReplace'
+import SearchAndReplace from "@sereneinserenade/tiptap-search-and-replace";
+// import { SearchAndReplace } from '../../../../src/searchAndReplace'
 
 import GithubIcon from "../assets/github.svg";
 
