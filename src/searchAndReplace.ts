@@ -1,6 +1,6 @@
 // MIT License
 
-// Copyright (c) 2023 Jeet Mandaliya (Github Username: sereneinserenade)
+// Copyright (c) 2023 - 2024 Jeet Mandaliya (Github Username: sereneinserenade)
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,12 @@
 
 import { Extension, Range, type Dispatch } from "@tiptap/core";
 import { Decoration, DecorationSet } from "@tiptap/pm/view";
-import { Plugin, PluginKey, type EditorState, type Transaction } from "@tiptap/pm/state";
+import {
+  Plugin,
+  PluginKey,
+  type EditorState,
+  type Transaction,
+} from "@tiptap/pm/state";
 import { Node as PMNode } from "@tiptap/pm/model";
 
 declare module "@tiptap/core" {
@@ -47,7 +52,11 @@ declare module "@tiptap/core" {
       /**
        * @description Find next instance of search result.
        */
-      next: () => ReturnType;
+      nextSearchResult: () => ReturnType;
+      /**
+       * @description Find previous instance of search result.
+       */
+      previousSearchResult: () => ReturnType;
       /**
        * @description Replace first instance of search result with given replace term.
        */
@@ -88,12 +97,17 @@ function processSearches(
   resultIndex: number,
 ): ProcessedSearches {
   const decorations: Decoration[] = [];
-  let textNodesWithPosition: TextNodesWithPosition[] = [];
   const results: Range[] = [];
+
+  let textNodesWithPosition: TextNodesWithPosition[] = [];
   let index = 0;
 
-  if (!searchTerm)
-    return { decorationsToReturn: DecorationSet.empty, results: [] };
+  if (!searchTerm) {
+    return {
+      decorationsToReturn: DecorationSet.empty,
+      results: [],
+    };
+  }
 
   doc?.descendants((node, pos) => {
     if (node.isText) {
@@ -150,21 +164,20 @@ function processSearches(
     decorationsToReturn: DecorationSet.create(doc, decorations),
     results,
   };
-};
+}
 
 const replace = (
   replaceTerm: string,
   results: Range[],
-  index: number,
   { state, dispatch }: { state: EditorState; dispatch: Dispatch },
 ) => {
-  const firstResult = results[index]
+  const firstResult = results[0];
 
-  if (!firstResult) return ``
+  if (!firstResult) return;
 
-  const { from, to } = results[index]
+  const { from, to } = results[0];
 
-  dispatch?.(state.tr.insertText(replaceTerm, from, to))
+  if (dispatch) dispatch(state.tr.insertText(replaceTerm, from, to));
 };
 
 const rebaseNextResult = (
@@ -196,13 +209,14 @@ const replaceAll = (
   results: Range[],
   { tr, dispatch }: { tr: Transaction; dispatch: Dispatch },
 ) => {
-  let offset = 0
-  let resultsCopy = results.slice()
+  let offset = 0;
+
+  let resultsCopy = results.slice();
 
   if (!resultsCopy.length) return;
 
   for (let i = 0; i < resultsCopy.length; i += 1) {
-    const { from, to } = resultsCopy[i]
+    const { from, to } = resultsCopy[i];
 
     tr.insertText(replaceTerm, from, to);
 
@@ -219,7 +233,7 @@ const replaceAll = (
     resultsCopy = rebaseNextResultResponse[1];
   }
 
-  dispatch?.(tr)
+  dispatch(tr);
 };
 
 export const searchAndReplacePluginKey = new PluginKey(
@@ -298,13 +312,32 @@ export const SearchAndReplace = Extension.create<
 
           return false;
         },
-      next:
+      nextSearchResult:
         () =>
         ({ editor }) => {
           const { results, resultIndex } = editor.storage.searchAndReplace;
 
-          if (results[resultIndex + 1]) {
-            editor.storage.searchAndReplace.resultIndex = resultIndex + 1;
+          const nextIndex = resultIndex + 1;
+
+          if (results[nextIndex]) {
+            editor.storage.searchAndReplace.resultIndex = nextIndex;
+          } else {
+            editor.storage.searchAndReplace.resultIndex = 0;
+          }
+
+          return false;
+        },
+      previousSearchResult:
+        () =>
+        ({ editor }) => {
+          const { results, resultIndex } = editor.storage.searchAndReplace;
+
+          const prevIndex = resultIndex - 1;
+
+          if (results[prevIndex]) {
+            editor.storage.searchAndReplace.resultIndex = prevIndex;
+          } else {
+            editor.storage.searchAndReplace.resultIndex = results.length - 1;
           }
 
           return false;
@@ -312,9 +345,9 @@ export const SearchAndReplace = Extension.create<
       replace:
         () =>
         ({ editor, state, dispatch }) => {
-          const { replaceTerm, results, resultIndex } = editor.storage.searchAndReplace;
+          const { replaceTerm, results } = editor.storage.searchAndReplace;
 
-          replace(replaceTerm, results, resultIndex, { state, dispatch });
+          replace(replaceTerm, results, { state, dispatch });
 
           return false;
         },
@@ -377,7 +410,7 @@ export const SearchAndReplace = Extension.create<
               doc,
               getRegex(searchTerm, disableRegex, caseSensitive),
               searchResultClass,
-              resultIndex
+              resultIndex,
             );
 
             editor.storage.searchAndReplace.results = results;

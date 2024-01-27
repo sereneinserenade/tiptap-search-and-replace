@@ -79,6 +79,13 @@
           Clear
         </button>
         <button
+          @click="previous"
+          type="button"
+          class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          Previous
+        </button>
+        <button
           @click="next"
           type="button"
           class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
@@ -101,7 +108,7 @@
         </button>
 
         <div class="block text-sm font-medium text-gray-700 py-2 px-4">
-          Results: {{ editor?.storage?.searchAndReplace?.results.length }}
+          Results: {{ editor?.storage?.searchAndReplace?.resultIndex + 1 }} / {{ editor?.storage?.searchAndReplace?.results.length }}
         </div>
       </span>
     </div>
@@ -115,8 +122,8 @@ import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import { onMounted, ref, watch } from "vue";
 
-import SearchAndReplace from "@sereneinserenade/tiptap-search-and-replace";
-// import { SearchAndReplace } from '../../../../src/searchAndReplace'
+// import SearchAndReplace from "@sereneinserenade/tiptap-search-and-replace";
+import { SearchAndReplace } from '../../../../src/searchAndReplace'
 
 import GithubIcon from "../assets/github.svg";
 
@@ -191,7 +198,12 @@ const replace = () => {
 };
 
 const next = () => {
-  editor.value?.commands.next();
+  editor.value?.commands.nextSearchResult();
+  goToSelection();
+};
+
+const previous = () => {
+  editor.value?.commands.previousSearchResult();
   goToSelection();
 };
 
