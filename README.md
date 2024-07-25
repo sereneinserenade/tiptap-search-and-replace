@@ -18,7 +18,7 @@ https://user-images.githubusercontent.com/45892659/163356581-5fd38888-4e29-41d9-
 
 ## How to use
 
-> **Note**: npm version is not up-to-date. Just copy paste [the extension](./src/tiptap-extensions/searchAndReplace.ts) in your code and it should work
+> **Note**: npm version is not up-to-date. Just copy paste [the extension](./src/searchAndReplace.ts) in your code and it should work
 
 **Ideally you should keep track of these states in your code, but if you absolutely need to read the `searchTerm` and `replaceTerm` from extension, here's the code.**
 ```ts
@@ -58,7 +58,6 @@ const editor = new Editor({
   extensions: [
     SearchNReplace.configure({
       searchResultClass: "search-result", // class to give to found items. default 'search-result'
-      caseSensitive: false, // no need to explain
       disableRegex: false, // also no need to explain
     }),
   ],
