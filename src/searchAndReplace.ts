@@ -349,6 +349,11 @@ export const SearchAndReplace = Extension.create<
 
           replace(replaceTerm, results, { state, dispatch });
 
+          // fix #11 for result index
+          if (this.storage.resultIndex >= results.length - 1) {
+            this.storage.resultIndex = 0;
+          }
+
           return false;
         },
       replaceAll:
