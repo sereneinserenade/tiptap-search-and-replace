@@ -1,7 +1,7 @@
 <template>
   <div class="tiptap">
     <section class="flex items-center justify-between mb-6">
-      <h2 class="text-3xl font-bold">Tiptap 2 Search-N-Replace</h2>
+      <h2 class="text-3xl font-bold">Tiptap Search-N-Replace</h2>
 
       <section>
         <a
@@ -117,6 +117,7 @@
 </template>
 
 <script setup lang="ts">
+import type { Range } from "@tiptap/core";
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
