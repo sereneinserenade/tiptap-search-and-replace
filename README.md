@@ -1,10 +1,10 @@
-# Tiptap 2 Search and Replace
+# Tiptap Search and Replace
 
-Search and Replace extension for [Tiptap 2](https://tiptap.dev). Published to npm as [@sereneinserenade/tiptap-search-and-replace](https://www.npmjs.com/package/@sereneinserenade/tiptap-search-and-replace).
+Search and Replace extension for [Tiptap](https://tiptap.dev) **v2 and v3** (peer dependencies: `@tiptap/core` and `@tiptap/pm` `^2.0.0 || ^3.0.0`). Published to npm as [@sereneinserenade/tiptap-search-and-replace](https://www.npmjs.com/package/@sereneinserenade/tiptap-search-and-replace).
 
 A ⭐️ to the repo if you 👍 / ❤️  what I'm doing would be much appreciated. If you're using this extension and making money from it, it'd be very kind of you to [:heart: Sponsor me](https://github.com/sponsors/sereneinserenade). If you're looking for a **dev to work you on your project's Rich Text Editor** with or as **a frontend developer, [DM me on Discord/Twitter/LinkedIn](https://github.com/sereneinserenade)👨‍💻🤩**.
 
-I've made a bunch of extensions for Tiptap 2, some of them are **Google Docs like Commenting**, **Resize image and Videos**, **LanguageTool integration** with tiptap. You can check it our here https://github.com/sereneinserenade#a-glance-of-my-projects .
+I've made a bunch of extensions for Tiptap, some of them are **Google Docs like Commenting**, **Resize image and Videos**, **LanguageTool integration** with tiptap. You can check it our here https://github.com/sereneinserenade#a-glance-of-my-projects .
 
 # Live Demo
 

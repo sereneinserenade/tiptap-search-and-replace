@@ -30,7 +30,27 @@ import {
 } from "@tiptap/pm/state";
 import { Node as PMNode } from "@tiptap/pm/model";
 
+export interface SearchAndReplaceOptions {
+  searchResultClass: string;
+  disableRegex: boolean;
+}
+
+export interface SearchAndReplaceStorage {
+  searchTerm: string;
+  replaceTerm: string;
+  results: Range[];
+  lastSearchTerm: string;
+  caseSensitive: boolean;
+  lastCaseSensitive: boolean;
+  resultIndex: number;
+  lastResultIndex: number;
+}
+
 declare module "@tiptap/core" {
+  interface Storage {
+    searchAndReplace: SearchAndReplaceStorage;
+  }
+
   interface Commands<ReturnType> {
     search: {
       /**
@@ -239,22 +259,6 @@ const replaceAll = (
 export const searchAndReplacePluginKey = new PluginKey(
   "searchAndReplacePlugin",
 );
-
-export interface SearchAndReplaceOptions {
-  searchResultClass: string;
-  disableRegex: boolean;
-}
-
-export interface SearchAndReplaceStorage {
-  searchTerm: string;
-  replaceTerm: string;
-  results: Range[];
-  lastSearchTerm: string;
-  caseSensitive: boolean;
-  lastCaseSensitive: boolean;
-  resultIndex: number;
-  lastResultIndex: number;
-}
 
 export const SearchAndReplace = Extension.create<
   SearchAndReplaceOptions,

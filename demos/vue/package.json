@@ -8,10 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sereneinserenade/tiptap-search-and-replace": "^0.1.1",
-    "@tiptap/extension-link": "^2.x.x",
-    "@tiptap/starter-kit": "^2.x.x",
-    "@tiptap/vue-3": "^2.x.x",
+    "@sereneinserenade/tiptap-search-and-replace": "file:../..",
+    "@tiptap/extension-link": "^3.0.0",
+    "@tiptap/starter-kit": "^3.0.0",
+    "@tiptap/vue-3": "^3.0.0",
     "sass": "^1.69.7",
     "vue": "^3.4.13"
   },
