@@ -1,6 +1,6 @@
 {
   "name": "@sereneinserenade/tiptap-search-and-replace",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Tiptap extension for search and replace",
   "keywords": [
     "tiptap-search-and-replace-extension",
