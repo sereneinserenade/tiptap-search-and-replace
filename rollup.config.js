@@ -1,7 +1,6 @@
 // rollup.config.js
 
 const autoExternal = require("rollup-plugin-auto-external");
-const sourcemaps = require("rollup-plugin-sourcemaps");
 const commonjs = require("@rollup/plugin-commonjs");
 const babel = require("@rollup/plugin-babel");
 const typescript = require("rollup-plugin-typescript2");
@@ -24,7 +23,6 @@ const config = {
   ],
   plugins: [
     autoExternal({ packagePath: "./package.json" }),
-    sourcemaps(),
     babel(),
     commonjs(),
     typescript({
