@@ -37,6 +37,6 @@ test("publish workflow uses a trusted publishing compatible Node and npm", () =>
   assert.match(publishWorkflow, /node-version:\s*"22\.14\.0"/);
   assert.match(
     publishWorkflow,
-    /npm install -g npm@latest/,
+    /npm install -g npm@11\b/,
   );
 });
