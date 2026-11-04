@@ -111,6 +111,7 @@ const getRegex = (
 interface ProcessedSearches {
 	decorationsToReturn: DecorationSet;
 	results: Range[];
+	resultIndex: number;
 }
 
 function processSearches(
@@ -129,6 +130,7 @@ function processSearches(
 		return {
 			decorationsToReturn: DecorationSet.empty,
 			results: [],
+			resultIndex: 0,
 		};
 	}
 
@@ -170,10 +172,13 @@ function processSearches(
 		}
 	}
 
+	const currentIndex =
+		resultIndex >= 0 && resultIndex < results.length ? resultIndex : 0;
+
 	for (let i = 0; i < results.length; i += 1) {
 		const r = results[i];
 		const className =
-			i === resultIndex
+			i === currentIndex
 				? `${searchResultClass} ${searchResultClass}-current`
 				: searchResultClass;
 		const decoration: Decoration = Decoration.inline(r.from, r.to, {
@@ -186,6 +191,7 @@ function processSearches(
 	return {
 		decorationsToReturn: DecorationSet.create(doc, decorations),
 		results,
+		resultIndex: currentIndex,
 	};
 }
 
@@ -418,7 +424,11 @@ export const SearchAndReplace = Extension.create<
 							return DecorationSet.empty;
 						}
 
-						const { decorationsToReturn, results } = processSearches(
+						const {
+							decorationsToReturn,
+							results,
+							resultIndex: currentIndex,
+						} = processSearches(
 							doc,
 							getRegex(searchTerm, disableRegex, caseSensitive),
 							searchResultClass,
@@ -426,6 +436,8 @@ export const SearchAndReplace = Extension.create<
 						);
 
 						editor.storage.searchAndReplace.results = results;
+						editor.storage.searchAndReplace.resultIndex = currentIndex;
+						setLastResultIndex(currentIndex);
 
 						return decorationsToReturn;
 					},
