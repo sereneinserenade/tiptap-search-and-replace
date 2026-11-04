@@ -86,6 +86,12 @@ declare module "@tiptap/core" {
 	}
 }
 
+declare module "@tiptap/core" {
+	interface Storage {
+		searchAndReplace: SearchAndReplaceStorage;
+	}
+}
+
 interface TextNodesWithPosition {
 	text: string;
 	pos: number;
@@ -249,6 +255,8 @@ const replaceAll = (
 		offset = rebaseNextResultResponse[0];
 		resultsCopy = rebaseNextResultResponse[1];
 	}
+
+	if (!dispatch) return;
 
 	dispatch(tr);
 };
