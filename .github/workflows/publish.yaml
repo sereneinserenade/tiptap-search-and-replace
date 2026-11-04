@@ -18,12 +18,12 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22.14.0"
+          node-version: "26.12.1"
           registry-url: "https://registry.npmjs.org"
           cache: "npm"
 
       - name: Upgrade npm for trusted publishing
-        run: npm install -g npm@11
+        run: npm install -g npm@12.2.1
 
       - name: Verify release tag matches package version
         env:

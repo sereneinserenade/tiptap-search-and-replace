@@ -31,15 +31,14 @@
     "test": "node --test"
   },
   "devDependencies": {
-    "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "^24.0.1",
-    "@tiptap/core": "^3.0.0",
-    "@tiptap/pm": "^3.0.0",
-    "rollup": "^3.17.3",
+    "@rollup/plugin-babel": "^7.1.0",
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@tiptap/core": "^3.32.0",
+    "@tiptap/pm": "^3.32.0",
+    "rollup": "^4.66.0",
     "rollup-plugin-auto-external": "^2.0.0",
-    "rollup-plugin-sourcemaps": "^0.6.3",
-    "rollup-plugin-typescript2": "^0.34.1",
-    "typescript": "^5.0.2"
+    "rollup-plugin-typescript2": "^0.37.0",
+    "typescript": "^6.0.3"
   },
   "peerDependencies": {
     "@tiptap/core": "^2.0.0 || ^3.0.0",

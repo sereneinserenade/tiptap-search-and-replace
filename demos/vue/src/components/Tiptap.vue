@@ -31,7 +31,7 @@
               type="text"
               placeholder="Search..."
               autofocus="true"
-              class="block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              class="block w-full border-gray-300 rounded-md shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
         </div>
@@ -48,7 +48,7 @@
               @keydown.enter.prevent="replace"
               type="text"
               placeholder="Replace..."
-              class="block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              class="block w-full border-gray-300 rounded-md shadow-xs focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
         </div>
@@ -64,7 +64,7 @@
               v-model="caseSensitive"
               @input="updateSearchReplace"
               type="checkbox"
-              class="border-gray-300 rounded-md shadow-sm w-5 h-5 mt-2"
+              class="border-gray-300 rounded-md shadow-xs w-5 h-5 mt-2"
             />
           </div>
         </div>

@@ -34,9 +34,9 @@ test("publish workflow runs from published releases", () => {
 });
 
 test("publish workflow uses a trusted publishing compatible Node and npm", () => {
-  assert.match(publishWorkflow, /node-version:\s*"22\.14\.0"/);
+  assert.match(publishWorkflow, /node-version:\s*"26\.12\.1"/);
   assert.match(
     publishWorkflow,
-    /npm install -g npm@11\b/,
+    /npm install -g npm@12\.2\.1/,
   );
 });
